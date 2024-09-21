@@ -90,7 +90,7 @@ const Home = () => {
             <p>Marketplace</p>
           </Link>
           <Link
-            to="/dashboard"
+            to={`/dashboard/${currentAccount}`}
             className="h-12 bg-beige text-textGreen font-bold rounded-lg px-8 py-3 animate-gradient-animation"
           >
             <p>Dashboard</p>

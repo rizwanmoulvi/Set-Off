@@ -7,9 +7,10 @@ import { ethers } from "ethers";
 import SetOffABI from "../utils/setoff.json";
 import { Link } from "react-router-dom";
 
-const CONTRACT_ADDRESS = "0x21FF55197A6Fd55678Fb76e444440189E61de557";
+const CONTRACT_ADDRESS = "0xCA9A920b21369729bB9e643AFbe1BdC8b3D250C2";
 
 const MarketPlace = () => {
+  const [allLoans, setAllLoans] = useState([]); // Store all loans
   const [network, setNetwork] = useState("");
   const [currentAccount, setCurrentAccount] = useState("");
   const [loans, setLoans] = useState([]); // Store loans here
@@ -79,9 +80,14 @@ const MarketPlace = () => {
       );
 
       console.log("Fetching listed loans...");
-      const loans = await setOffContract.getListedLoans();
+      const loans = await setOffContract.getAllLoans();
       console.log("Listed loans:", loans);
-      setLoans(loans); // Store the loans in state
+      
+      const listedLoans = loans.filter(loan => loan.listed === true);
+      console.log("Filtered listed loans:", listedLoans);  
+
+      setAllLoans(loans); // Store all loans in state
+      setLoans(listedLoans); // Store the loans in state
     } catch (error) {
       console.log("Error fetching listed loans:", error);
     }
@@ -214,29 +220,36 @@ const MarketPlace = () => {
         </h2>
         {loans.length > 0 ? (
           <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {loans.map((loan, index) => (
+          {loans.map((loan, index) => {
+            const loanId = allLoans.findIndex((allLoan) => 
+              allLoan.lender === loan.lender && 
+              allLoan.amount === loan.amount && 
+              allLoan.interestRate === loan.interestRate && 
+              allLoan.term === loan.term
+            ); // Find loan ID based on allLoans array
+            return (
               <div
                 key={index}
                 className="bg-beige p-4 rounded-lg text-textGreen shadow-md"
               >
-                <p>Loan ID: {index}</p>
+                <p>Loan ID: {loanId !== -1 ? loanId : "Not found"}</p>
                 <p>Lender: {loan.lender}</p>
                 <p>Amount: {ethers.utils.formatEther(loan.amount)} ETH</p>
                 <p>Interest Rate: {loan.interestRate.toString()}%</p>
                 <p>Term: {loan.term.toString()} months</p>
                 {/* Show borrow button only if the current account is not the lender */}
-                {currentAccount.toUpperCase() !==
-                  loan.lender.toString().toUpperCase() && (
+                {currentAccount.toUpperCase() !== loan.lender.toString().toUpperCase() && (
                   <button
-                    onClick={() => borrowLoan(index)}
+                    onClick={() => borrowLoan(loanId)}
                     className="mt-4 bg-green-500 text-white px-4 py-2 rounded-lg"
                   >
                     Borrow
                   </button>
                 )}
               </div>
-            ))}
-          </div>
+            );
+          })}
+        </div>        
         ) : (
           <p>No loans listed</p>
         )}
