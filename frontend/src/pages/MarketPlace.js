@@ -7,7 +7,7 @@ import { ethers } from "ethers";
 import SetOffABI from "../utils/setoff.json";
 import { Link } from "react-router-dom";
 
-const CONTRACT_ADDRESS = "0x26CB838DBf7ff7B3B3aACCd0375F0A8EA75F5B2f";
+const CONTRACT_ADDRESS = "0x21FF55197A6Fd55678Fb76e444440189E61de557";
 
 const MarketPlace = () => {
   const [network, setNetwork] = useState("");
@@ -136,7 +136,7 @@ const MarketPlace = () => {
         signer
       );
 
-      const transaction = await setOffContract.borrowLoan(loanId);
+      const transaction = await setOffContract.borrow(loanId);
       await transaction.wait();
       console.log(`Successfully borrowed loan with ID: ${loanId}`);
       // Optionally, you can refresh the list of loans after borrowing
@@ -169,7 +169,7 @@ const MarketPlace = () => {
             <p>Marketplace</p>
           </Link>
           <Link
-            to="/dashboard"
+            to={`/dashboard/${currentAccount}`}
             className="h-12 bg-beige text-textGreen font-bold rounded-lg px-8 py-3 animate-gradient-animation"
           >
             <p>Dashboard</p>
@@ -184,10 +184,18 @@ const MarketPlace = () => {
           </div>
           <div className="bg-beige text-textGreen font-bold flex px-8 py-3 rounded-lg">
             {network === "Linea Sepolia Testnet" ? (
-              <p>
-                Wallet: {currentAccount.slice(0, 6)}...
-                {currentAccount.slice(-4)}
-              </p>
+              <div className="flex">
+                <img
+                  alt="Network logo"
+                  className="w-5 h-5 mr-2"
+                  src={network.includes("Polygon") ? polygonLogo : ethLogo}
+                />
+
+                <p>
+                  Wallet: {currentAccount.slice(0, 6)}...
+                  {currentAccount.slice(-4)}
+                </p>
+              </div>
             ) : (
               <button
                 onClick={switchNetwork}
@@ -209,7 +217,7 @@ const MarketPlace = () => {
             {loans.map((loan, index) => (
               <div
                 key={index}
-                className="bg-beige p-4 rounded-lg text-white shadow-md"
+                className="bg-beige p-4 rounded-lg text-textGreen shadow-md"
               >
                 <p>Loan ID: {index}</p>
                 <p>Lender: {loan.lender}</p>
@@ -217,7 +225,8 @@ const MarketPlace = () => {
                 <p>Interest Rate: {loan.interestRate.toString()}%</p>
                 <p>Term: {loan.term.toString()} months</p>
                 {/* Show borrow button only if the current account is not the lender */}
-                {currentAccount.toLowerCase !== loan.lender.toString() && (
+                {currentAccount.toUpperCase() !==
+                  loan.lender.toString().toUpperCase() && (
                   <button
                     onClick={() => borrowLoan(index)}
                     className="mt-4 bg-green-500 text-white px-4 py-2 rounded-lg"
