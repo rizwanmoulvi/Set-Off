@@ -1,35 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import polygonLogo from '../assets/polygonlogo.svg';
-import ethLogo from '../assets/ethlogo.svg';
-import { networks } from '../utils/networks';
-import { ethers } from 'ethers';
-import SetOffABI from '../utils/setoff.json';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import polygonLogo from "../assets/polygonlogo.svg";
+import ethLogo from "../assets/ethlogo.svg";
+import { networks } from "../utils/networks";
+import { ethers } from "ethers";
+import SetOffABI from "../utils/setoff.json";
+import { Link } from "react-router-dom";
 
-const CONTRACT_ADDRESS = '0x26CB838DBf7ff7B3B3aACCd0375F0A8EA75F5B2f';
+const CONTRACT_ADDRESS = "0x26CB838DBf7ff7B3B3aACCd0375F0A8EA75F5B2f";
 
-const Domain = () => {
-  const [network, setNetwork] = useState('');
-  const [currentAccount, setCurrentAccount] = useState('');
+const MarketPlace = () => {
+  const [network, setNetwork] = useState("");
+  const [currentAccount, setCurrentAccount] = useState("");
   const [loans, setLoans] = useState([]); // Store loans here
-
-
 
   const connectWallet = async () => {
     try {
       const { ethereum } = window;
 
       if (!ethereum) {
-        alert('Get MetaMask -> https://metamask.io/');
+        alert("Get MetaMask -> https://metamask.io/");
         return;
       }
 
       const accounts = await ethereum.request({
-        method: 'eth_requestAccounts',
+        method: "eth_requestAccounts",
       });
 
-      console.log('Connected', accounts[0]);
+      console.log("Connected", accounts[0]);
       setCurrentAccount(accounts[0]);
     } catch (error) {
       console.log(error);
@@ -40,28 +38,28 @@ const Domain = () => {
     const { ethereum } = window;
 
     if (!ethereum) {
-      console.log('Make sure you have metamask!');
+      console.log("Make sure you have metamask!");
       return;
     } else {
-      console.log('We have the ethereum object', ethereum);
+      console.log("We have the ethereum object", ethereum);
     }
 
-    const accounts = await ethereum.request({ method: 'eth_accounts' });
+    const accounts = await ethereum.request({ method: "eth_accounts" });
 
     if (accounts.length !== 0) {
       const account = accounts[0];
-      console.log('Found an authorized account:', account);
+      console.log("Found an authorized account:", account);
       setCurrentAccount(account);
     } else {
-      console.log('No authorized account found');
+      console.log("No authorized account found");
     }
 
-    const chainId = await ethereum.request({ method: 'eth_chainId' });
-    const networkName = networks[chainId] || 'Unknown Network';
+    const chainId = await ethereum.request({ method: "eth_chainId" });
+    const networkName = networks[chainId] || "Unknown Network";
     console.log(networkName);
     setNetwork(networkName);
 
-    ethereum.on('chainChanged', handleChainChanged);
+    ethereum.on("chainChanged", handleChainChanged);
 
     function handleChainChanged(_chainId) {
       window.location.reload();
@@ -75,18 +73,17 @@ const Domain = () => {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const setOffContract = new ethers.Contract(
-        CONTRACT_ADDRESS, // Replace with your contract address
+        CONTRACT_ADDRESS,
         SetOffABI.abi,
         signer
       );
 
-      console.log('Fetching listed loans...');
+      console.log("Fetching listed loans...");
       const loans = await setOffContract.getListedLoans();
-      console.log('Listed loans:', loans);
-      console.log('Listed loans:', loans);
+      console.log("Listed loans:", loans);
       setLoans(loans); // Store the loans in state
     } catch (error) {
-      console.log('Error fetching listed loans:', error);
+      console.log("Error fetching listed loans:", error);
     }
   };
 
@@ -94,25 +91,25 @@ const Domain = () => {
     if (window.ethereum) {
       try {
         await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0xe705' }],
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: "0xe705" }],
         });
       } catch (error) {
         if (error.code === 4902) {
           try {
             await window.ethereum.request({
-              method: 'wallet_addEthereumChain',
+              method: "wallet_addEthereumChain",
               params: [
                 {
-                  chainId: '0xe705',
-                  chainName: 'Linea Sepolia Testnet',
-                  rpcUrls: ['https://linea-sepolia.infura.io/v3/'],
+                  chainId: "0xe705",
+                  chainName: "Linea Sepolia Testnet",
+                  rpcUrls: ["https://linea-sepolia.infura.io/v3/"],
                   nativeCurrency: {
-                    name: 'ETH',
-                    symbol: 'ETH',
+                    name: "ETH",
+                    symbol: "ETH",
                     decimals: 18,
                   },
-                  blockExplorerUrls: ['https://sepolia.lineascan.build/'],
+                  blockExplorerUrls: ["https://sepolia.lineascan.build/"],
                 },
               ],
             });
@@ -124,8 +121,28 @@ const Domain = () => {
       }
     } else {
       alert(
-        'MetaMask is not installed. Please install it to use this app: https://metamask.io/download.html'
+        "MetaMask is not installed. Please install it to use this app: https://metamask.io/download.html"
       );
+    }
+  };
+
+  const borrowLoan = async (loanId) => {
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const setOffContract = new ethers.Contract(
+        CONTRACT_ADDRESS,
+        SetOffABI.abi,
+        signer
+      );
+
+      const transaction = await setOffContract.borrowLoan(loanId);
+      await transaction.wait();
+      console.log(`Successfully borrowed loan with ID: ${loanId}`);
+      // Optionally, you can refresh the list of loans after borrowing
+      fetchListedLoans();
+    } catch (error) {
+      console.error("Failed to borrow loan:", error);
     }
   };
 
@@ -135,7 +152,7 @@ const Domain = () => {
   }, [currentAccount]);
 
   return (
-    <div className='text-center h-screen bg-darkGray w-full'>
+    <div className="text-center bg-darkGray w-full">
       <header className="flex w-full bg-lightGray fixed justify-between p-[0.75rem] z-50">
         <div className="flex items-center text-left ml-10">
           <Link to="/">
@@ -162,16 +179,20 @@ const Domain = () => {
               onClick={connectWallet}
               className="bg-beige text-textGreen font-bold flex px-8 py-3 rounded-lg"
             >
-              {currentAccount ? 'Connected' : 'Connect Wallet'}
+              {currentAccount ? "Connected" : "Connect Wallet"}
             </button>
           </div>
           <div className="bg-beige text-textGreen font-bold flex px-8 py-3 rounded-lg">
             {network === "Linea Sepolia Testnet" ? (
               <p>
-                Wallet: {currentAccount.slice(0, 6)}...{currentAccount.slice(-4)}
+                Wallet: {currentAccount.slice(0, 6)}...
+                {currentAccount.slice(-4)}
               </p>
             ) : (
-              <button onClick={switchNetwork} className="cta-button mint-button">
+              <button
+                onClick={switchNetwork}
+                className="cta-button mint-button"
+              >
                 Switch to Linea Sepolia
               </button>
             )}
@@ -179,23 +200,34 @@ const Domain = () => {
         </div>
       </header>
 
-      <div className='flex flex-col items-center p-8'>
-        <h2 className='text-3xl font-bold text-peach mb-4'>Listed Loans</h2>
+      <div className="flex flex-col items-center px-4 ">
+        <h2 className="text-6xl text-beige font-bold text-peach mt-32 mb-4">
+          Listed Loans
+        </h2>
         {loans.length > 0 ? (
-          <ul className='w-full max-w-4xl'>
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {loans.map((loan, index) => (
-              <li
+              <div
                 key={index}
-                className='bg-lightGray p-4 my-2 rounded-lg shadow-md'
+                className="bg-beige p-4 rounded-lg text-white shadow-md"
               >
                 <p>Loan ID: {index}</p>
                 <p>Lender: {loan.lender}</p>
                 <p>Amount: {ethers.utils.formatEther(loan.amount)} ETH</p>
-                <p>Interest Rate: {loan.interestRate}%</p>
-                <p>Term: {loan.term} months</p>
-              </li>
+                <p>Interest Rate: {loan.interestRate.toString()}%</p>
+                <p>Term: {loan.term.toString()} months</p>
+                {/* Show borrow button only if the current account is not the lender */}
+                {currentAccount.toLowerCase !== loan.lender.toString() && (
+                  <button
+                    onClick={() => borrowLoan(index)}
+                    className="mt-4 bg-green-500 text-white px-4 py-2 rounded-lg"
+                  >
+                    Borrow
+                  </button>
+                )}
+              </div>
             ))}
-          </ul>
+          </div>
         ) : (
           <p>No loans listed</p>
         )}
@@ -204,4 +236,4 @@ const Domain = () => {
   );
 };
 
-export default Domain;
+export default MarketPlace;
