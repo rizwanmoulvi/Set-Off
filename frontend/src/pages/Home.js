@@ -73,7 +73,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="w-full h-screen bg-darkGray text-center overflow-hidden">
+    <div className="w-full bg-darkGray text-center overflow-hidden">
       <header className="flex w-full bg-lightGray fixed justify-between p-[0.75rem] z-50">
         <div className="flex items-center text-left ml-10">
           <Link to="/">
@@ -120,6 +120,18 @@ const Home = () => {
           </div>
         </div>
       </header>
+      <div>
+      <div className="flex flex-row h-screen items-center justify-center mt-16 w-full">
+  <div className="w-1/2 flex flex-col items-center justify-center">
+    <p className="text-15xl font-bold text-peach">SET</p>
+    <p className="text-15xl font-bold text-peach">OFF</p>
+  </div>
+  <div className="w-1/2 flex flex-col items-center justify-center pt-16">
+    <p className="text-peach text-4xl font-bold">A P2P Micro Lending And Borrowing Platform</p>
+    <p className="text-peach text-4xl font-bold mt-5">With Closed Clearing Mechanism</p>
+  </div>
+</div>
+      </div>
     </div>
   );
 };

@@ -14,6 +14,12 @@ module.exports = {
         olive: '#606C38',
         greenOne: '#283618',
       },
+      fontSize: {
+        '10xl': '10rem', // Example custom font size
+        '11xl': '11rem', // Another example custom font size
+        '12xl': '12rem', // Additional custom font size
+        '15xl' : '15rem',
+      },
     },
   },
   plugins: [],

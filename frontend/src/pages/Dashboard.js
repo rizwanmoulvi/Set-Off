@@ -199,7 +199,7 @@ const Members = () => {
 
       // Filter loans based on the current account
       const borrowed = formattedLoans.filter(
-        (loan) => loan.borrower === currentAccount.toLowerCase() && loan.repaid === false
+        (loan) => loan.borrower === currentAccount.toLowerCase() 
       );
       const lended = formattedLoans.filter(
         (loan) => loan.lender === currentAccount.toLowerCase() && loan.listed === true
