@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import polygonLogo from "../assets/polygonlogo.svg";
-import ethLogo from "../assets/ethlogo.svg";
+import polygonLogo from "../assets/polygonlogo.png";
+import ethLogo from "../assets/ethlogo.png";
 import { networks } from "../utils/networks";
 import { ethers } from "ethers";
 import SetOffABI from "../utils/setoff.json";
 import { Link } from "react-router-dom";
 
-const CONTRACT_ADDRESS = "0xCA9A920b21369729bB9e643AFbe1BdC8b3D250C2";
+const CONTRACT_ADDRESS = "0xCD511cDC4F8C8893D3C15F46b65c3d96A7F829f5";
 
 const MarketPlace = () => {
   const [allLoans, setAllLoans] = useState([]); // Store all loans
@@ -98,7 +98,7 @@ const MarketPlace = () => {
       try {
         await window.ethereum.request({
           method: "wallet_switchEthereumChain",
-          params: [{ chainId: "0xe705" }],
+          params: [{ chainId: "0x1e808f" }], //0x1e808f
         });
       } catch (error) {
         if (error.code === 4902) {
@@ -107,15 +107,15 @@ const MarketPlace = () => {
               method: "wallet_addEthereumChain",
               params: [
                 {
-                  chainId: "0xe705",
-                  chainName: "Linea Sepolia Testnet",
-                  rpcUrls: ["https://linea-sepolia.infura.io/v3/"],
+                  chainId: "0x1e808f",
+                  chainName: "Xphere Testnet",
+                  rpcUrls: ["http://testnet.x-phere.com"],
                   nativeCurrency: {
-                    name: "ETH",
-                    symbol: "ETH",
+                    name: "XPT",
+                    symbol: "XPT",
                     decimals: 18,
                   },
-                  blockExplorerUrls: ["https://sepolia.lineascan.build/"],
+                  blockExplorerUrls: ["https://xpt.tamsa.io/tx/"],
                 },
               ],
             });
@@ -234,7 +234,7 @@ const MarketPlace = () => {
               >
                 <p>Loan ID: {loanId !== -1 ? loanId : "Not found"}</p>
                 <p>Lender: {loan.lender}</p>
-                <p>Amount: {ethers.utils.formatEther(loan.amount)} ETH</p>
+                <p>Amount: {ethers.utils.formatEther(loan.amount)} XPT</p>
                 <p>Interest Rate: {loan.interestRate.toString()}%</p>
                 <p>Term: {loan.term.toString()} months</p>
                 {/* Show borrow button only if the current account is not the lender */}

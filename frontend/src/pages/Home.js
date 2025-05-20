@@ -4,12 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquare } from "@fortawesome/free-regular-svg-icons";
 import { Link } from "react-router-dom";
-import polygonLogo from "../assets/polygonlogo.svg";
-import ethLogo from "../assets/ethlogo.svg";
+import polygonLogo from "../assets/polygonlogo.png";
+import ethLogo from "../assets/ethlogo.png";
 import { networks } from "../utils/networks";
 // import contractAbi from '../utils/DomainFactory.json';
 
-const CONTRACT_ADDRESS = '0x26CB838DBf7ff7B3B3aACCd0375F0A8EA75F5B2f';
+const CONTRACT_ADDRESS = '0xCD511cDC4F8C8893D3C15F46b65c3d96A7F829f5';
 
 const Home = () => {
   const [currentAccount, setCurrentAccount] = useState("");

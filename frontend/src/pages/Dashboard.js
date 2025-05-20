@@ -2,16 +2,16 @@ import "../styles/App.css";
 import { ethers } from "ethers";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useNavigate } from "react-router-dom";
-import ethLogo from "../assets/ethlogo.svg";
+import ethLogo from "../assets/ethlogo.png";
 import { networks } from "../utils/networks";
 import React, { useEffect, useState } from "react";
-import polygonLogo from "../assets/polygonlogo.svg";
+import polygonLogo from "../assets/polygonlogo.png";
 import { faCopy, faSquare } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import SetOffABI from "../utils/setoff.json"; // Import your contract ABI
 
-const CONTRACT_ADDRESS = "0xCA9A920b21369729bB9e643AFbe1BdC8b3D250C2";
+const CONTRACT_ADDRESS = "0xCD511cDC4F8C8893D3C15F46b65c3d96A7F829f5"; //0xCD511cDC4F8C8893D3C15F46b65c3d96A7F829f5
 
 const Members = () => {
   const [allLoans, setAllLoans] = useState([]); // Store all loans
@@ -54,7 +54,7 @@ const Members = () => {
       try {
         await window.ethereum.request({
           method: "wallet_switchEthereumChain",
-          params: [{ chainId: "0xe705" }],
+          params: [{ chainId: "0x1e808f" }],
         });
       } catch (error) {
         if (error.code === 4902) {
@@ -63,15 +63,15 @@ const Members = () => {
               method: "wallet_addEthereumChain",
               params: [
                 {
-                  chainId: "0xe705",
-                  chainName: "Linea Sepolia Testnet",
-                  rpcUrls: ["https://linea-sepolia.infura.io/v3/"],
+                  chainId: "0x1e808f",
+                  chainName: "Xphere Testnet",
+                  rpcUrls: ["http://testnet.x-phere.com"],
                   nativeCurrency: {
-                    name: "ETH",
-                    symbol: "ETH",
+                    name: "XPT",
+                    symbol: "XPT",
                     decimals: 18,
                   },
-                  blockExplorerUrls: ["https://sepolia.lineascan.build/"],
+                  blockExplorerUrls: ["https://xpt.tamsa.io/tx/"],
                 },
               ],
             });
@@ -283,7 +283,7 @@ const Members = () => {
       const walletBalance = await provider.getBalance(walletAddress);
       console.log("Wallet address:", walletAddress);
       console.log(
-        "Wallet balance (ETH):",
+        "Wallet balance (XPT):",
         ethers.utils.formatEther(walletBalance)
       );
 
@@ -483,7 +483,7 @@ const Members = () => {
               name="contributeAmount"
               value={contributeAmount}
               onChange={(e) => setContributeAmount(e.target.value)}
-              placeholder="Contribution Amount (ETH)"
+              placeholder="Contribution Amount (XPT)"
               className="p-2 border border-gray-300 rounded"
             />
             <button
@@ -515,7 +515,7 @@ const Members = () => {
                   name="amount"
                   value={loanDetails.amount}
                   onChange={handleInputChange}
-                  placeholder="Loan Amount (ETH)"
+                  placeholder="Loan Amount (XPT)"
                   className="p-2 border border-gray-300 rounded"
                 />
                 <input
